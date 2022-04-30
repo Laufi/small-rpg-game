@@ -30,7 +30,6 @@ InputValid = 1
 ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
 ShownPossibleHeal = f"{MinHeal} - {MaxHeal}"
 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth'] #FOR FUTURE - CALL THIS IN LOOP TOO!
-MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
 DefeatedMonsters = 0
 print(f"You are fighting against a {MonsterList[MonsterFromList]['MonsterType']} \n"
             f"The {MonsterList[MonsterFromList]['MonsterType']} has {MonsterHealth} HP! \n" 
@@ -44,6 +43,7 @@ while playerHealth > 0:
     playerAction = input("Enter your action: ")
     PossibleDamage = randint(MinDamage, MaxDamage)
     PossibleHeal = randint(MinHeal, MaxHeal)
+    MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
     if playerAction == "FIGHT":
             MonsterHealth = MonsterHealth - PossibleDamage
             print(f"You attack the {MonsterList[MonsterFromList]['MonsterType']} for {PossibleDamage}! \n"
