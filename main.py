@@ -1,5 +1,4 @@
 from random import randint
-
 MonsterList = [{'MonsterType': 'Skeleton',
                'MonsterHealth': 10,
                'MonsterMinDamage': 1,
@@ -41,10 +40,7 @@ print(f"You are fighting against a {MonsterList[MonsterFromList]['MonsterType']}
             f"You have {playerHealth} health! \n"
             f"You can FIGHT, HEAL or RUN! \n"
             )
-
 while playerHealth > 0:
-
-
     playerAction = input("Enter your action: ")
     PossibleDamage = randint(MinDamage, MaxDamage)
     PossibleHeal = randint(MinHeal, MaxHeal)
@@ -66,12 +62,12 @@ while playerHealth > 0:
             print(f"{MonsterList[MonsterFromList]['MonsterType']} attacks you for {MonsterPossibleDamage}! \n"
             f"You now have {playerHealth} HP left!")
     elif InputValid == 1 and MonsterHealth <= 0:
-            print(f"The {MonsterList[MonsterFromList]['MonsterType']} has been defeated! \n"
+            DefeatedMonsters += 1
+            print(f"The {MonsterList[MonsterFromList]['MonsterType']} has been defeated! You have defeated {DefeatedMonsters} monsters so far!\n"
             "\n"
             "================ M O N S T E R D E F E A T E D ================ \n"
             "\n"
             )
-            DefeatedMonsters += 1
             MonsterFromList = randint(0,3)
             MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
             MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
