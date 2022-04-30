@@ -9,25 +9,30 @@ MonsterList = [{'MonsterType': 'Skeleton',
                'MonsterMinDamage': 3,
                'MonsterMaxDamage': 5},
                {'MonsterType' : 'Alligator',
-               'MonsterHealth': 15,
-               'MonsterMinDamage': 5,
+               'MonsterHealth': 6,
+               'MonsterMinDamage': 4,
                'MonsterMaxDamage': 7},
                {'MonsterType' : 'Ninja',
-               'MonsterHealth': 8,
+               'MonsterHealth': 4,
                'MonsterMinDamage': 8,
-               'MonsterMaxDamage': 10}]
-MonsterFromList = randint(0,3) #FOR FUTURE - CALL THIS IN LOOP TOO!
+               'MonsterMaxDamage': 10},
+               {'MonsterType' : 'Muddy Crab',
+               'MonsterHealth': 3,
+               'MonsterMinDamage': 100,
+               'MonsterMaxDamage': 100} 
+               ]
+MonsterFromList = randint(0,4) #FOR FUTURE - CALL THIS IN LOOP TOO!
 playerHealth = 20
 MinDamage = 1
 MaxDamage = 4
-MinHeal = 1
-MaxHeal = 2
+MinHeal = 2
+MaxHeal = 4
 InputValid = 1
 ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
 ShownPossibleHeal = f"{MinHeal} - {MaxHeal}"
 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth'] #FOR FUTURE - CALL THIS IN LOOP TOO!
 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
-
+DefeatedMonsters = 0
 print(f"You are fighting against a {MonsterList[MonsterFromList]['MonsterType']} \n"
             f"The {MonsterList[MonsterFromList]['MonsterType']} has {MonsterHealth} HP! \n" 
             f"It can deal {MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']} damage! \n"
@@ -66,6 +71,7 @@ while playerHealth > 0:
             "================ M O N S T E R D E F E A T E D ================ \n"
             "\n"
             )
+            DefeatedMonsters += 1
             MonsterFromList = randint(0,3)
             MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
             MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
@@ -82,5 +88,10 @@ while playerHealth > 0:
     if playerHealth <= 0:
             print("The player has run out of health! \n"
             "\n"
+            f"You defeated {DefeatedMonsters} monsters!\n"
+            "\n"
             "================        G A M E L O S T        ================"
             )
+    if DefeatedMonsters == 10:
+            print("THE PLAYER HAS DEFEATED THE FINAL ENEMY! THE TOWER IS NOW FREE! \n"
+            "================    Y O U A R E W I N N E R    ================")
