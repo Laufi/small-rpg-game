@@ -27,8 +27,8 @@ ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
 ShownPossibleHeal = f"{MinHeal} - {MaxHeal}"
 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth'] #FOR FUTURE - CALL THIS IN LOOP TOO!
 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
-while playerHealth > 0:
-    print(f"You are fighting against a {MonsterList[MonsterFromList]['MonsterType']} \n"
+
+print(f"You are fighting against a {MonsterList[MonsterFromList]['MonsterType']} \n"
             f"The {MonsterList[MonsterFromList]['MonsterType']} has {MonsterHealth} HP! \n" 
             f"It can deal {MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']} damage! \n"
             f"You can deal {ShownPossibleDamage} damage! \n"
@@ -36,14 +36,17 @@ while playerHealth > 0:
             f"You have {playerHealth} health! \n"
             f"You can FIGHT, HEAL or RUN! \n"
             )
-            # BTW THIS SHOULD NOT BE IN THE LOOP, HAVE THIS GO OUTSIDE THE WHILE FIGHTINGMONSTER LOOP!!!!
+
+while playerHealth > 0:
+
+
     playerAction = input("Enter your action: ")
     PossibleDamage = randint(MinDamage, MaxDamage)
     PossibleHeal = randint(MinHeal, MaxHeal)
     if playerAction == "FIGHT":
             MonsterHealth = MonsterHealth - PossibleDamage
             print(f"You attack the {MonsterList[MonsterFromList]['MonsterType']} for {PossibleDamage}! \n"
-            "It now has {MonsterHealth} HP left!")
+            f"It now has {MonsterHealth} HP left!")
     elif playerAction == "HEAL":
             playerHealth = playerHealth + PossibleHeal
             print(f"You heal for {PossibleHeal}! You now have {playerHealth} HP!")
@@ -53,9 +56,31 @@ while playerHealth > 0:
     else:
             print("Invalid input!")
             InputValid = 0
-    if InputValid == 1:
+    if InputValid == 1 and MonsterHealth > 0:
             playerHealth = playerHealth - MonsterPossibleDamage
             print(f"{MonsterList[MonsterFromList]['MonsterType']} attacks you for {MonsterPossibleDamage}! \n"
             f"You now have {playerHealth} HP left!")
-    else:
+    elif InputValid == 1 and MonsterHealth <= 0:
+            print(f"The {MonsterList[MonsterFromList]['MonsterType']} has been defeated! \n"
+            "\n"
+            "================ M O N S T E R D E F E A T E D ================ \n"
+            "\n"
+            )
+            MonsterFromList = randint(0,3)
+            MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
+            MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
+            print(f"You are fighting against a {MonsterList[MonsterFromList]['MonsterType']} \n"
+            f"The {MonsterList[MonsterFromList]['MonsterType']} has {MonsterHealth} HP! \n" 
+            f"It can deal {MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']} damage! \n"
+            f"You can deal {ShownPossibleDamage} damage! \n"
+            f"You can heal for {ShownPossibleHeal} HP! \n"
+            f"You have {playerHealth} health! \n"
+            f"You can FIGHT, HEAL or RUN! \n"
+            )
+    elif InputValid == 0:
             InputValid = 1
+    if playerHealth <= 0:
+            print("The player has run out of health! \n"
+            "\n"
+            "================        G A M E L O S T        ================"
+            )
