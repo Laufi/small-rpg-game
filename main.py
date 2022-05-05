@@ -36,10 +36,23 @@ FloorTypes = [{'FloorType': 'Regular',
                'HealModifier': 1.5,
                'Poison': 0,
                'DamageDealToMonster': 1
-               }
+               },
+               {'FloorType': 'Ultra Poisonous',
+               'HealModifier': 1,
+               'Poison': 2,
+               'DamageDealToMonster': 1
+               },
+               {'FloorType': 'Ultra Spiky',
+                'HealModifier': 1,
+                'Poison': 0,
+                'DamageDealToMonster': 3},
+                {'FloorType': 'Ultra Sating', 
+                'HealModifier': 3, 
+                'Poison': 0, 
+                'DamageDealToMonster': 1}
                 ]
 MonsterFromList = randint(0,4) #FOR FUTURE - CALL THIS IN LOOP TOO!
-FloorFromList = randint(0,3)
+FloorFromList = randint(0,6)
 playerHealth = 20
 MinDamage = 1
 MaxDamage = 4
@@ -81,7 +94,7 @@ while playerHealth > 0:
     if InputValid == 1 and MonsterHealth > 0:
             playerHealth = playerHealth - MonsterPossibleDamage
             print(f"*{MonsterList[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}*!")
-            if FloorTypes[FloorFromList]['FloorType'] == 'Poisonous':
+            if FloorTypes[FloorFromList]['Poison'] >0:
                     playerHealth = playerHealth - FloorTypes[FloorFromList]['Poison']
                     print(f"The poison on the floor damages you for *{FloorTypes[FloorFromList]['Poison']}* HP!")
             else:
@@ -100,7 +113,7 @@ while playerHealth > 0:
                 break
             else:
                 MonsterFromList = randint(0,4)
-                FloorFromList = randint(0,3)
+                FloorFromList = randint(0,6)
                 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
                 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
                 print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
