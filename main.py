@@ -30,11 +30,16 @@ FloorTypes = [{'FloorType': 'Regular',
                'DamageDealToMonster': 1},
                {'FloorType': 'Spiky',
                'HealModifier': 1,
-               'Poison': 1,
-               'DamageDealToMonster': 1.5}
+               'Poison': 0,
+               'DamageDealToMonster': 1.5},
+               {'FloorType': 'Sating',
+               'HealModifier': 1.5,
+               'Poison': 0,
+               'DamageDealToMonster': 1
+               }
                 ]
 MonsterFromList = randint(0,4) #FOR FUTURE - CALL THIS IN LOOP TOO!
-FloorFromList = randint(0,2)
+FloorFromList = randint(0,3)
 playerHealth = 20
 MinDamage = 1
 MaxDamage = 4
@@ -46,12 +51,12 @@ ShownPossibleHeal = f"{MinHeal} - {MaxHeal}"
 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth'] #FOR FUTURE - CALL THIS IN LOOP TOO!
 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
 DefeatedMonsters = 0
-print(f"You are fighting against a {MonsterList[MonsterFromList]['MonsterType']} on a {FloorTypes[FloorFromList]['FloorType']} floor! \n"
-            f"The {MonsterList[MonsterFromList]['MonsterType']} has {MonsterHealth} HP! \n" 
-            f"It can deal {MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']} damage! \n"
-            f"You can deal {ShownPossibleDamage} damage! \n"
-            f"You can heal for {ShownPossibleHeal} HP! \n"
-            f"You have {playerHealth} health! \n"
+print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
+            f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
+            f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
+            f"You can deal *{ShownPossibleDamage}* damage! \n"
+            f"You can heal for *{ShownPossibleHeal}* HP! \n"
+            f"You have *{playerHealth}* health! \n"
             f"You can FIGHT, HEAL or RUN! \n"
             )
 while playerHealth > 0:
@@ -60,12 +65,12 @@ while playerHealth > 0:
     PossibleHeal = randint(MinHeal, MaxHeal)
     MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
     if playerAction == "FIGHT":
-            MonsterHealth = MonsterHealth - PossibleDamage
-            print(f"You attack the {MonsterList[MonsterFromList]['MonsterType']} for {PossibleDamage}! \n"
-            f"It now has {MonsterHealth} HP left!")
+            MonsterHealth = MonsterHealth - (PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster'])
+            print(f"You attack the *{MonsterList[MonsterFromList]['MonsterType']}* for *{PossibleDamage}* with a floor modifier of *{FloorTypes[FloorFromList]['DamageDealToMonster']}*, resulting in *{PossibleDamage * FloorTypes[FloorFromList]['DamageDealToMonster']}* damage! \n"
+            f"It now has *{MonsterHealth}* HP left!")
     elif playerAction == "HEAL":
-            playerHealth = playerHealth + PossibleHeal
-            print(f"You heal for {PossibleHeal}! You now have {playerHealth} HP!")
+            playerHealth = playerHealth + PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
+            print(f"You heal for *{PossibleHeal}* with a modifier of *{FloorTypes[FloorFromList]['HealModifier']}* for a total of *{PossibleHeal*FloorTypes[FloorFromList]['HealModifier']}*! You now have *{playerHealth}* HP!")
     elif playerAction == "RUN":
             print("You run away! A cowardly choice to be certain, alas, the tower remains a danger to humanity...\n" 
                 "================ C O W A R D L Y W A Y O U T ================")
@@ -75,42 +80,43 @@ while playerHealth > 0:
             InputValid = 0
     if InputValid == 1 and MonsterHealth > 0:
             playerHealth = playerHealth - MonsterPossibleDamage
-            print(f"{MonsterList[MonsterFromList]['MonsterType']} attacks you for {MonsterPossibleDamage}!")
+            print(f"*{MonsterList[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}*!")
             if FloorTypes[FloorFromList]['FloorType'] == 'Poisonous':
                     playerHealth = playerHealth - FloorTypes[FloorFromList]['Poison']
-                    print(f"The poison on the floor damages you for {FloorTypes[FloorFromList]['Poison']} HP!")
+                    print(f"The poison on the floor damages you for *{FloorTypes[FloorFromList]['Poison']}* HP!")
             else:
                     pass
-            print(f"You now have {playerHealth} HP left!")
+            print(f"You now have *{playerHealth}* HP left!")
     elif InputValid == 1 and MonsterHealth <= 0:
             DefeatedMonsters += 1
-            print(f"The {MonsterList[MonsterFromList]['MonsterType']} has been defeated! You have defeated {DefeatedMonsters} monsters so far!\n"
+            print(f"The *{MonsterList[MonsterFromList]['MonsterType']}* has been defeated! You have defeated *{DefeatedMonsters}* monsters so far!\n"
             "\n"
             "================ M O N S T E R D E F E A T E D ================ \n"
             "\n"
             )
-            MonsterFromList = randint(0,4)
-            FloorFromList = randint(0,2)
-            MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
-            MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
-            print(f"You are fighting against a {MonsterList[MonsterFromList]['MonsterType']} on a {FloorTypes[FloorFromList]['FloorType']} floor! \n"
-            f"The {MonsterList[MonsterFromList]['MonsterType']} has {MonsterHealth} HP! \n" 
-            f"It can deal {MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']} damage! \n"
-            f"You can deal {ShownPossibleDamage} damage! \n"
-            f"You can heal for {ShownPossibleHeal} HP! \n"
-            f"You have {playerHealth} health! \n"
-            f"You can FIGHT, HEAL or RUN! \n"
-            )
+            if DefeatedMonsters == 10:
+                print("THE PLAYER HAS DEFEATED THE FINAL ENEMY! THE TOWER IS NOW FREE! \n"
+                "================    Y O U A R E W I N N E R    ================")
+                break
+            else:
+                MonsterFromList = randint(0,4)
+                FloorFromList = randint(0,3)
+                MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
+                MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
+                print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
+                    f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
+                    f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
+                    f"You can deal *{ShownPossibleDamage}* damage! \n"
+                    f"You can heal for *{ShownPossibleHeal}* HP! \n"
+                    f"You have *{playerHealth}* health! \n"
+                    f"You can FIGHT, HEAL or RUN! \n"
+                    )
     elif InputValid == 0:
             InputValid = 1
     if playerHealth <= 0:
             print("The player has run out of health! \n"
             "\n"
-            f"You defeated {DefeatedMonsters} monsters!\n"
+            f"You defeated *{DefeatedMonsters}* monsters!\n"
             "\n"
             "================        G A M E L O S T        ================"
             )
-    if DefeatedMonsters == 10:
-            print("THE PLAYER HAS DEFEATED THE FINAL ENEMY! THE TOWER IS NOW FREE! \n"
-            "================    Y O U A R E W I N N E R    ================")
-            break
