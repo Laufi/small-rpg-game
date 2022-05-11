@@ -51,24 +51,46 @@ FloorTypes = [{'FloorType': 'Regular',
                 'Poison': 0, 
                 'DamageDealToMonster': 1}
                 ]
+
+def PrintFinalResults():
+        FinalScore = (4*TotalDamageDealt) + (TotalHealingDone*(-1)) + (10*DefeatedMonsters)
+        print(f"You managed to kill *{DefeatedMonsters}*! \n"
+        f"You healed for *{TotalHealingDone}* HP! \n"
+        f"You dealt a total of *{TotalDamageDealt}* damage! \n"
+        f"Your final score is *{FinalScore}*!")
+
 MonsterFromList = randint(0,4) #FOR FUTURE - CALL THIS IN LOOP TOO!
 FloorFromList = randint(0,6)
+
+MaxMana = 10
+playerMana = 10 
+
 playerHealth = 20
+
 MinDamage = 1
 MaxDamage = 4
+
 MinHeal = 2
 MaxHeal = 4
+
 InputValid = 1
+difference = 0
+
+TotalHealingDone = 0
+TotalDamageDealt = 0
+DefeatedMonsters = 0
+FinalScore = 0
+
 ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
 ShownPossibleHeal = f"{MinHeal} - {MaxHeal}"
 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth'] #FOR FUTURE - CALL THIS IN LOOP TOO!
 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
-DefeatedMonsters = 0
 print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
             f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
             f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
             f"You can deal *{ShownPossibleDamage}* damage! \n"
-            f"You can heal for *{ShownPossibleHeal}* HP! \n"
+            f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
+            f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
             f"You have *{playerHealth}* health! \n"
             f"You can FIGHT, HEAL or RUN! \n"
             )
@@ -79,18 +101,31 @@ while playerHealth > 0:
     MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
     if playerAction == "FIGHT":
             MonsterHealth = MonsterHealth - (PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster'])
+            TotalDamageDealt += PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster']
             print(f"You attack the *{MonsterList[MonsterFromList]['MonsterType']}* for *{PossibleDamage}* with a floor modifier of *{FloorTypes[FloorFromList]['DamageDealToMonster']}*, resulting in *{PossibleDamage * FloorTypes[FloorFromList]['DamageDealToMonster']}* damage! \n"
             f"It now has *{MonsterHealth}* HP left!")
-    elif playerAction == "HEAL":
+            if playerMana < MaxMana:
+                playerMana += 1
+                print(f"You regain *1* Mana! You now have *{playerMana}* Mana!")
+            else:
+                    pass
+    elif playerAction == "HEAL" and playerMana >= 3:
             playerHealth = playerHealth + PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
+            playerMana -= 3
+            TotalHealingDone += PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
             print(f"You heal for *{PossibleHeal}* with a modifier of *{FloorTypes[FloorFromList]['HealModifier']}* for a total of *{PossibleHeal*FloorTypes[FloorFromList]['HealModifier']}*! You now have *{playerHealth}* HP!")
+            print(f"You use up *3* Mana! You now have *{playerMana}* Mana left!")
+    elif playerAction == "HEAL" and playerMana < 3:
+            InputValid = 0
+            print(f"You do not have enough mana to cast Heal!")
     elif playerAction == "RUN":
             print("You run away! A cowardly choice to be certain, alas, the tower remains a danger to humanity...\n" 
                 "================ C O W A R D L Y W A Y O U T ================")
+            PrintFinalResults()
             break
     else:
             print("Invalid input!")
-            InputValid = 0
+            InputValid = 0    
     if InputValid == 1 and MonsterHealth > 0:
             playerHealth = playerHealth - MonsterPossibleDamage
             print(f"*{MonsterList[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}*!")
@@ -107,9 +142,20 @@ while playerHealth > 0:
             "================ M O N S T E R D E F E A T E D ================ \n"
             "\n"
             )
+            if playerMana < MaxMana and DefeatedMonsters != 10:
+                    if playerMana + 5 > MaxMana:
+                            difference = MaxMana - playerMana
+                            playerMana += difference
+                            print(f"You regain *{difference}* Mana for clearing the floor! You now have *{playerMana}*!")
+                    else: 
+                        playerMana += 5
+                        print(f"You regain *5* Mana for clearing the floor! You now have *{playerMana}* Mana!")
+            else:
+                    pass
             if DefeatedMonsters == 10:
                 print("THE PLAYER HAS DEFEATED THE FINAL ENEMY! THE TOWER IS NOW FREE! \n"
                 "================    Y O U A R E W I N N E R    ================")
+                PrintFinalResults()
                 break
             else:
                 MonsterFromList = randint(0,4)
@@ -120,12 +166,14 @@ while playerHealth > 0:
                     f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
                     f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
                     f"You can deal *{ShownPossibleDamage}* damage! \n"
-                    f"You can heal for *{ShownPossibleHeal}* HP! \n"
+                    f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
+                    f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
                     f"You have *{playerHealth}* health! \n"
                     f"You can FIGHT, HEAL or RUN! \n"
                     )
     elif InputValid == 0:
             InputValid = 1
+
     if playerHealth <= 0:
             print("The player has run out of health! \n"
             "\n"
