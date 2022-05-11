@@ -99,7 +99,7 @@ while playerHealth > 0:
     PossibleDamage = randint(MinDamage, MaxDamage)
     PossibleHeal = randint(MinHeal, MaxHeal)
     MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
-    if playerAction == "FIGHT":
+    if playerAction == "FIGHT" or playerAction == "fight" or playerAction == "f":
             MonsterHealth = MonsterHealth - (PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster'])
             TotalDamageDealt += PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster']
             print(f"You attack the *{MonsterList[MonsterFromList]['MonsterType']}* for *{PossibleDamage}* with a floor modifier of *{FloorTypes[FloorFromList]['DamageDealToMonster']}*, resulting in *{PossibleDamage * FloorTypes[FloorFromList]['DamageDealToMonster']}* damage! \n"
@@ -109,16 +109,16 @@ while playerHealth > 0:
                 print(f"You regain *1* Mana! You now have *{playerMana}* Mana!")
             else:
                     pass
-    elif playerAction == "HEAL" and playerMana >= 3:
+    elif playerAction == "HEAL" or playerAction == "heal" or playerAction == "h" and playerMana >= 3:
             playerHealth = playerHealth + PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
             playerMana -= 3
             TotalHealingDone += PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
             print(f"You heal for *{PossibleHeal}* with a modifier of *{FloorTypes[FloorFromList]['HealModifier']}* for a total of *{PossibleHeal*FloorTypes[FloorFromList]['HealModifier']}*! You now have *{playerHealth}* HP!")
             print(f"You use up *3* Mana! You now have *{playerMana}* Mana left!")
-    elif playerAction == "HEAL" and playerMana < 3:
+    elif playerAction == "HEAL" or playerAction == "heal" or playerAction == "h" and playerMana < 3:
             InputValid = 0
             print(f"You do not have enough mana to cast Heal!")
-    elif playerAction == "RUN":
+    elif playerAction == "RUN" or playerAction == "run" or playerAction == "r":
             print("You run away! A cowardly choice to be certain, alas, the tower remains a danger to humanity...\n" 
                 "================ C O W A R D L Y W A Y O U T ================")
             PrintFinalResults()
