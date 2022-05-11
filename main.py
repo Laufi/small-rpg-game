@@ -54,10 +54,22 @@ FloorTypes = [{'FloorType': 'Regular',
 
 def PrintFinalResults():
         FinalScore = (4*TotalDamageDealt) + (TotalHealingDone*(-1)) + (10*DefeatedMonsters)
-        print(f"You managed to kill *{DefeatedMonsters}*! \n"
+        print(f"You managed to kill *{DefeatedMonsters}* monsters! \n"
         f"You healed for *{TotalHealingDone}* HP! \n"
         f"You dealt a total of *{TotalDamageDealt}* damage! \n"
         f"Your final score is *{FinalScore}*!")
+        if FinalScore < 40:
+                print("With a score like that, even my grandma is better!")
+        elif FinalScore > 40 and FinalScore < 80:
+                print("Well, starting to get somewhere! Okay score!")
+        elif FinalScore > 80 and FinalScore < 150:
+                print("Good score! Keep it up!")
+        elif FinalScore > 150 and FinalScore < 200:
+                print("Now that is really good!")
+        elif FinalScore > 200 and FinalScore < 250:
+                print("Well, if you've gotten a score like that you've probably beaten the game! Good job!")
+        elif FinalScore > 250:
+                print("Wow! God-tier gamer!")
 
 MonsterFromList = randint(0,4) #FOR FUTURE - CALL THIS IN LOOP TOO!
 FloorFromList = randint(0,6)
@@ -99,7 +111,7 @@ while playerHealth > 0:
     PossibleDamage = randint(MinDamage, MaxDamage)
     PossibleHeal = randint(MinHeal, MaxHeal)
     MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
-    if playerAction == "FIGHT" or playerAction == "fight" or playerAction == "f":
+    if playerAction == "FIGHT" or playerAction == "fight" or playerAction == "f" or playerAction == "F":
             MonsterHealth = MonsterHealth - (PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster'])
             TotalDamageDealt += PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster']
             print(f"You attack the *{MonsterList[MonsterFromList]['MonsterType']}* for *{PossibleDamage}* with a floor modifier of *{FloorTypes[FloorFromList]['DamageDealToMonster']}*, resulting in *{PossibleDamage * FloorTypes[FloorFromList]['DamageDealToMonster']}* damage! \n"
@@ -109,16 +121,16 @@ while playerHealth > 0:
                 print(f"You regain *1* Mana! You now have *{playerMana}* Mana!")
             else:
                     pass
-    elif playerAction == "HEAL" or playerAction == "heal" or playerAction == "h" and playerMana >= 3:
+    elif playerAction == "HEAL" or playerAction == "heal" or playerAction == "h" or playerAction == "H"and playerMana >= 3:
             playerHealth = playerHealth + PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
             playerMana -= 3
             TotalHealingDone += PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
             print(f"You heal for *{PossibleHeal}* with a modifier of *{FloorTypes[FloorFromList]['HealModifier']}* for a total of *{PossibleHeal*FloorTypes[FloorFromList]['HealModifier']}*! You now have *{playerHealth}* HP!")
             print(f"You use up *3* Mana! You now have *{playerMana}* Mana left!")
-    elif playerAction == "HEAL" or playerAction == "heal" or playerAction == "h" and playerMana < 3:
+    elif playerAction == "HEAL" or playerAction == "heal" or playerAction == "h" or playerAction == "H" and playerMana < 3:
             InputValid = 0
             print(f"You do not have enough mana to cast Heal!")
-    elif playerAction == "RUN" or playerAction == "run" or playerAction == "r":
+    elif playerAction == "RUN" or playerAction == "run" or playerAction == "r" or playerAction == "R":
             print("You run away! A cowardly choice to be certain, alas, the tower remains a danger to humanity...\n" 
                 "================ C O W A R D L Y W A Y O U T ================")
             PrintFinalResults()
