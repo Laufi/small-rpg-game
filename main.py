@@ -1,4 +1,6 @@
 from random import randint
+import random
+import math
 MonsterList = [{'MonsterType': 'Skeleton',
                'MonsterHealth': 8,
                'MonsterMinDamage': 1,
@@ -52,25 +54,111 @@ FloorTypes = [{'FloorType': 'Regular',
                 'DamageDealToMonster': 1}
                 ]
 
+Weapons = [{
+            'Name': 'Stick',
+            'BaseDamageBoost': 0.5
+           },
+           {
+            'Name': 'Dagger',
+            'BaseDamageBoost': 0.75
+           },
+           {
+            'Name': 'Shortsword',
+            'BaseDamageBoost': 1
+           },
+           {
+            'Name': 'Longsword',
+            'BaseDamageBoost': 1.25       
+           },
+           {
+            'Name': 'Estoc',
+            'BaseDamageBoost': 1.5      
+           },
+           {
+            'Name': 'Mace',
+            'BaseDamageBoost': 1.75       
+           },
+           {
+            'Name': 'Sabre',
+            'BaseDamageBoost': 2     
+           }
+          ]
+ItemTraits = [{
+         'Title': 'Rusty',
+         'Modifier': 0.5        
+        },
+        {
+         'Title': 'Regular',
+         'Modifier': 1
+        },
+        {
+         'Title': 'Steel',
+         'Modifier': 1.5       
+        },
+        {
+         'Title': 'Titanium',
+         'Modifier': 2
+        }
+        ]       
 def PrintFinalResults():
         FinalScore = (4*TotalDamageDealt) + (TotalHealingDone*(-1)) + (10*DefeatedMonsters)
         print(f"You managed to kill *{DefeatedMonsters}* monsters! \n"
         f"You healed for *{TotalHealingDone}* HP! \n"
         f"You dealt a total of *{TotalDamageDealt}* damage! \n"
         f"Your final score is *{FinalScore}*!")
-        if FinalScore < 40:
+        if FinalScore < 75:
                 print("With a score like that, even my grandma is better!")
-        elif FinalScore > 40 and FinalScore < 80:
+        elif FinalScore >= 75 and FinalScore < 100:
                 print("Well, starting to get somewhere! Okay score!")
-        elif FinalScore > 80 and FinalScore < 150:
+        elif FinalScore >= 100 and FinalScore < 150:
                 print("Good score! Keep it up!")
-        elif FinalScore > 150 and FinalScore < 200:
+        elif FinalScore >= 150 and FinalScore < 250:
                 print("Now that is really good!")
-        elif FinalScore > 200 and FinalScore < 250:
+        elif FinalScore >= 250 and FinalScore < 300:
                 print("Well, if you've gotten a score like that you've probably beaten the game! Good job!")
-        elif FinalScore > 250:
+        elif FinalScore >= 300:
                 print("Wow! God-tier gamer!")
 
+def PrintIntroduction():
+        print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
+              f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
+              f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
+              f"You can deal *{ShownPossibleDamage}* damage! \n"
+              f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
+              f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
+              f"You have *{playerHealth}* health! \n"
+              f"You can FIGHT, HEAL or RUN! \n"
+            )
+def GetNewItem():
+    global PlayerWeapon
+    global PlayerWeaponDamage
+    global PlayerWeaponTrait
+    global MinDamage
+    global MaxDamage
+    global ShownPossibleDamage
+    ItemTypes = ['Helmet', 'Weapon', 'Coat']
+    WhatTypeItem = random.choice(ItemTypes)
+    MinDamage = PlayerBaseMinDamage + PlayerWeaponDamage
+    MaxDamage = PlayerBaseMaxDamage + PlayerWeaponDamage
+    if WhatTypeItem == 'Weapon':
+        NewWeapon = random.choice(Weapons)
+        NewWeaponTrait = random.choice(ItemTraits)
+        NewWeaponDamage = NewWeapon['BaseDamageBoost']*NewWeaponTrait['Modifier']
+        NewWeaponDamage = math.ceil(NewWeaponDamage)
+        if PlayerWeaponDamage > NewWeaponDamage:
+            print("You find a new weapon, but your current weapon is already better!")
+        else:
+            print(f"You acquire a new *{NewWeaponTrait['Title']} {NewWeapon['Name']}*! \n"
+            f"It deals an additional *{NewWeaponDamage}*")
+            PlayerWeapon = NewWeapon
+            PlayerWeaponTrait = NewWeaponTrait
+            PlayerWeaponDamage = NewWeaponDamage
+            MinDamage = PlayerBaseMinDamage + NewWeaponDamage
+            MaxDamage = PlayerBaseMaxDamage + NewWeaponDamage
+            ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
+            print(f"You now deal *{MinDamage}* to *{MaxDamage}* Damage!")
+    else:
+        print("Player got Helmet or Coat, not Weapon so it is not implemented yet, sorry!")
 MonsterFromList = randint(0,4) #FOR FUTURE - CALL THIS IN LOOP TOO!
 FloorFromList = randint(0,6)
 
@@ -79,6 +167,11 @@ playerMana = 10
 
 playerHealth = 20
 
+PlayerWeapon = None
+PlayerWeaponTrait = None
+PlayerWeaponDamage = 0
+PlayerBaseMinDamage = 1
+PlayerBaseMaxDamage = 4
 MinDamage = 1
 MaxDamage = 4
 
@@ -94,18 +187,10 @@ DefeatedMonsters = 0
 FinalScore = 0
 
 ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
-ShownPossibleHeal = f"{MinHeal} - {MaxHeal}"
+ShownPossibleHeal = f"{MinHeal}-{MaxHeal}"
 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth'] #FOR FUTURE - CALL THIS IN LOOP TOO!
 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
-print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
-            f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
-            f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
-            f"You can deal *{ShownPossibleDamage}* damage! \n"
-            f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
-            f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
-            f"You have *{playerHealth}* health! \n"
-            f"You can FIGHT, HEAL or RUN! \n"
-            )
+PrintIntroduction()
 while playerHealth > 0:
     playerAction = input("Enter your action: ")
     PossibleDamage = randint(MinDamage, MaxDamage)
@@ -154,6 +239,7 @@ while playerHealth > 0:
             "================ M O N S T E R D E F E A T E D ================ \n"
             "\n"
             )
+            GetNewItem()
             if playerMana < MaxMana and DefeatedMonsters != 10:
                     if playerMana + 5 > MaxMana:
                             difference = MaxMana - playerMana
@@ -174,15 +260,7 @@ while playerHealth > 0:
                 FloorFromList = randint(0,6)
                 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
                 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
-                print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
-                    f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
-                    f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
-                    f"You can deal *{ShownPossibleDamage}* damage! \n"
-                    f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
-                    f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
-                    f"You have *{playerHealth}* health! \n"
-                    f"You can FIGHT, HEAL or RUN! \n"
-                    )
+                PrintIntroduction()
     elif InputValid == 0:
             InputValid = 1
 
@@ -193,3 +271,4 @@ while playerHealth > 0:
             "\n"
             "================        G A M E L O S T        ================"
             )
+            PrintFinalResults()
