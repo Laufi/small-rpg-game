@@ -22,6 +22,14 @@ MonsterList = [{'MonsterType': 'Skeleton',
                'MonsterMinDamage': 100,
                'MonsterMaxDamage': 100} 
                ]
+Bosses = [{
+         'MonsterType': 'Massive Mosquitoe',
+         'MonsterHealth': 30,
+         'MonsterMinDamage': 2,
+         'MonsterMaxDamage': 6
+        }
+]
+
 FloorTypes = [{'FloorType': 'Regular',
                'HealModifier': 1,
                'Poison': 0,
@@ -184,9 +192,21 @@ def PrintFinalResults():
                 print("Wow! God-tier gamer!")
 
 def PrintIntroduction():
+    global DefeatedMonsters
+    if DefeatedMonsters < 9:
         print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
               f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
               f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
+              f"You can deal *{ShownPossibleDamage}* damage! \n"
+              f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
+              f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
+              f"You have *{playerHealth}* health and you can block *{PlayerChestplateBlock}* damage!\n"
+              f"You can FIGHT, HEAL or RUN! \n"
+            )
+    elif DefeatedMonsters == 9:
+        print(f"You are fighting against a *{Bosses[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
+              f"The *{Bosses[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
+              f"It can deal *{Bosses[MonsterFromList]['MonsterMinDamage']}-{Bosses[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
               f"You can deal *{ShownPossibleDamage}* damage! \n"
               f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
               f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
@@ -310,18 +330,25 @@ while playerHealth > 0:
     playerAction = input("Enter your action: ")
     PossibleDamage = randint(MinDamage, MaxDamage)
     PossibleHeal = randint(MinHeal, MaxHeal)
-    MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
+    if DefeatedMonsters < 9:
+        MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
+    elif DefeatedMonsters == 9:
+        MonsterPossibleDamage = randint(Bosses[MonsterFromList]['MonsterMinDamage'], Bosses[MonsterFromList]['MonsterMaxDamage'])
     if playerAction == "FIGHT" or playerAction == "fight" or playerAction == "f" or playerAction == "F":
             MonsterHealth = MonsterHealth - (PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster'])
             TotalDamageDealt += PossibleDamage*FloorTypes[FloorFromList]['DamageDealToMonster']
-            print(f"You attack the *{MonsterList[MonsterFromList]['MonsterType']}* for *{PossibleDamage}* with a floor modifier of *{FloorTypes[FloorFromList]['DamageDealToMonster']}*, resulting in *{PossibleDamage * FloorTypes[FloorFromList]['DamageDealToMonster']}* damage! \n"
-            f"It now has *{MonsterHealth}* HP left!")
+            if DefeatedMonsters < 9:
+                print(f"You attack the *{MonsterList[MonsterFromList]['MonsterType']}* for *{PossibleDamage}* with a floor modifier of *{FloorTypes[FloorFromList]['DamageDealToMonster']}*, resulting in *{PossibleDamage * FloorTypes[FloorFromList]['DamageDealToMonster']}* damage! \n"
+                f"It now has *{MonsterHealth}* HP left!")
+            elif DefeatedMonsters == 9:
+                print(f"You attack the *{Bosses[MonsterFromList]['MonsterType']}* for *{PossibleDamage}* with a floor modifier of *{FloorTypes[FloorFromList]['DamageDealToMonster']}*, resulting in *{PossibleDamage * FloorTypes[FloorFromList]['DamageDealToMonster']}* damage! \n"
+                f"It now has *{MonsterHealth}* HP left!")                
             if playerMana < MaxMana:
                 playerMana += 1
                 print(f"You regain *1* Mana! You now have *{playerMana}* Mana!")
             else:
                     pass
-    elif playerAction == "HEAL" or playerAction == "heal" or playerAction == "h" or playerAction == "H"and playerMana >= 3:
+    elif playerAction == "HEAL" or playerAction == "heal" or playerAction == "h" or playerAction == "H" and playerMana >= 3:
             playerHealth = playerHealth + PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
             playerMana -= 3
             TotalHealingDone += PossibleHeal*FloorTypes[FloorFromList]['HealModifier']
@@ -342,8 +369,12 @@ while playerHealth > 0:
         if PlayerChestplateBlock - MonsterPossibleDamage >= 0:
             print(f"You block all damage you take from the monster!")
         else: 
-            playerHealth = playerHealth - MonsterPossibleDamage + PlayerChestplateBlock
-            print(f"*{MonsterList[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}* but you block for *{PlayerChestplateBlock}* DMG!")
+            if DefeatedMonsters < 9:
+                playerHealth = playerHealth - MonsterPossibleDamage + PlayerChestplateBlock
+                print(f"*{MonsterList[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}* but you block for *{PlayerChestplateBlock}* DMG!")
+            elif DefeatedMonsters == 9:
+                playerHealth = playerHealth - MonsterPossibleDamage + PlayerChestplateBlock
+                print(f"*{Bosses[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}* but you block for *{PlayerChestplateBlock}* DMG!")
         if FloorTypes[FloorFromList]['Poison'] >0:
             playerHealth = playerHealth - FloorTypes[FloorFromList]['Poison']
             print(f"The poison on the floor damages you for *{FloorTypes[FloorFromList]['Poison']}* HP!")
@@ -352,12 +383,15 @@ while playerHealth > 0:
         print(f"You now have *{playerHealth}* HP left!")
     elif InputValid == 1 and MonsterHealth <= 0:
             DefeatedMonsters += 1
-            print(f"The *{MonsterList[MonsterFromList]['MonsterType']}* has been defeated! You have defeated *{DefeatedMonsters}* monsters so far!\n"
-            "\n"
-            "================ M O N S T E R D E F E A T E D ================ \n"
-            "\n"
-            )
-            GetNewItem()
+            if DefeatedMonsters < 10:
+                print(f"The *{MonsterList[MonsterFromList]['MonsterType']}* has been defeated! You have defeated *{DefeatedMonsters}* monsters so far!\n"
+                "\n"
+                "================ M O N S T E R D E F E A T E D ================ \n"
+                "\n"
+                )
+                GetNewItem()
+            elif DefeatedMonsters == 10:
+                print(f"The *{Bosses[MonsterFromList]['MonsterType']}* has been defeated!")
             if playerMana < MaxMana and DefeatedMonsters != 10:
                     if playerMana + 5 > MaxMana:
                             difference = MaxMana - playerMana
@@ -373,11 +407,20 @@ while playerHealth > 0:
                 "================    Y O U A R E W I N N E R    ================")
                 PrintFinalResults()
                 break
-            else:
+            elif DefeatedMonsters < 9:
                 MonsterFromList = randint(0,4)
                 FloorFromList = randint(0,6)
                 MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
                 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
+                PrintIntroduction()
+            elif DefeatedMonsters == 9:
+                print("Boss battle coming up here!")
+                print(f"CHECK: defeated {DefeatedMonsters} monsters ")
+                MonsterFromList = randint(0,0)
+                FloorFromList = randint(0,6)
+                MonsterHealth = Bosses[MonsterFromList]['MonsterHealth']
+                MonsterPossibleDamage = randint(Bosses[MonsterFromList]['MonsterMinDamage'], Bosses[MonsterFromList]['MonsterMaxDamage'])
+                print("================= B O S S F I G H T ===========")
                 PrintIntroduction()
     elif InputValid == 0:
             InputValid = 1
