@@ -349,7 +349,7 @@ while playerHealth > 0:
             print(f"The poison on the floor damages you for *{FloorTypes[FloorFromList]['Poison']}* HP!")
         else:
             pass
-            print(f"You now have *{playerHealth}* HP left!")
+        print(f"You now have *{playerHealth}* HP left!")
     elif InputValid == 1 and MonsterHealth <= 0:
             DefeatedMonsters += 1
             print(f"The *{MonsterList[MonsterFromList]['MonsterType']}* has been defeated! You have defeated *{DefeatedMonsters}* monsters so far!\n"
