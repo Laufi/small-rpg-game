@@ -100,6 +100,70 @@ ItemTraits = [{
          'Modifier': 2
         }
         ]       
+BookTypes = [{
+         'Name': 'Piece of paper',
+         'BaseHealBoost': 0.5
+        },
+        {
+         'Name': 'Scroll',
+         'BaseHealBoost': 0.75
+        },
+        {
+         'Name': 'Light Book',
+         'BaseHealBoost': 1   
+        },
+        {
+         'Name': 'Basic Book',
+         'BaseHealBoost': 1.25   
+        },
+        {
+         'Name': 'Heavy Book',
+         'BaseHealBoost': 1.5   
+        },
+        {
+         'Name': 'Encyclopedia',
+         'BaseHealBoost': 1.75   
+        },
+        {
+         'Name': 'Mobile Library',
+         'BaseHealBoost': 2   
+        }
+]
+BookTraits = [{
+         'Title': 'Torn-up',
+         'Modifier': 0.5
+        },
+        {
+         'Title': 'Regular',
+         'Modifier': 1   
+        },
+        {
+         'Title': 'Magic',
+         'Modifier': 1.5   
+        },
+        {
+         'Title': 'Enchanted',
+         'Modifier': 2
+        }
+]
+ChestplateTypes = [{
+         'Name': 'Clay vest',
+         'BaseBlock': 0.25
+        },
+        {
+         'Name': 'Leather vest',
+         'BaseBlock': 0.5   
+        },
+        {
+         'Name': 'Light armor',
+         'BaseBlock': 0.75   
+        },
+        {
+         'Name': 'Full-body armor',
+         'BaseBlock': 1   
+        }
+]
+
 def PrintFinalResults():
         FinalScore = (4*TotalDamageDealt) + (TotalHealingDone*(-1)) + (10*DefeatedMonsters)
         print(f"You managed to kill *{DefeatedMonsters}* monsters! \n"
@@ -126,7 +190,7 @@ def PrintIntroduction():
               f"You can deal *{ShownPossibleDamage}* damage! \n"
               f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
               f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
-              f"You have *{playerHealth}* health! \n"
+              f"You have *{playerHealth}* health and you can block *{PlayerChestplateBlock}* damage!\n"
               f"You can FIGHT, HEAL or RUN! \n"
             )
 def GetNewItem():
@@ -136,7 +200,16 @@ def GetNewItem():
     global MinDamage
     global MaxDamage
     global ShownPossibleDamage
-    ItemTypes = ['Helmet', 'Weapon', 'Coat']
+    global PlayerBook
+    global PlayerBookTrait
+    global MinHeal
+    global MaxHeal
+    global PlayerBookMagic
+    global ShownPossibleHeal
+    global PlayerChestplate
+    global PlayerChestplateBlock
+    global PlayerChestplateTrait
+    ItemTypes = ['Chestplate', 'Weapon', 'Book']
     WhatTypeItem = random.choice(ItemTypes)
     MinDamage = PlayerBaseMinDamage + PlayerWeaponDamage
     MaxDamage = PlayerBaseMaxDamage + PlayerWeaponDamage
@@ -149,7 +222,7 @@ def GetNewItem():
             print("You find a new weapon, but your current weapon is already better!")
         else:
             print(f"You acquire a new *{NewWeaponTrait['Title']} {NewWeapon['Name']}*! \n"
-            f"It deals an additional *{NewWeaponDamage}*")
+            f"It deals an additional *{NewWeaponDamage}* damage!")
             PlayerWeapon = NewWeapon
             PlayerWeaponTrait = NewWeaponTrait
             PlayerWeaponDamage = NewWeaponDamage
@@ -157,8 +230,37 @@ def GetNewItem():
             MaxDamage = PlayerBaseMaxDamage + NewWeaponDamage
             ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
             print(f"You now deal *{MinDamage}* to *{MaxDamage}* Damage!")
+    elif WhatTypeItem == 'Book':
+        NewBook = random.choice(BookTypes)
+        NewBookTrait = random.choice(BookTraits)
+        NewBookMagic = NewBook['BaseHealBoost']*NewBookTrait['Modifier']
+        NewBookMagic = math.ceil(NewBookMagic)
+        if PlayerBookMagic > NewBookMagic:
+            print("You find a new book, but your current book is already better!")
+        else:
+            print(f"You acquire a new *{NewBookTrait['Title']} {NewBook['Name']}*")
+            PlayerBook = NewBook
+            PlayerBookTrait = NewBookTrait
+            PlayerBookMagic = NewBookMagic
+            MinHeal = PlayerBaseMinHeal + NewBookMagic
+            MaxHeal = PlayerBaseMaxHeal + NewBookMagic
+            ShownPossibleHeal = f"{MinHeal}-{MaxHeal}"
+            print(f"You now heal *{MinHeal}* to *{MaxHeal}* HP!")
+    elif WhatTypeItem == 'Chestplate':
+        NewChestplate = random.choice(ChestplateTypes)
+        NewChestplateTrait = random.choice(ItemTraits)
+        NewChestplateBlock = NewChestplate['BaseBlock']*NewChestplateTrait['Modifier']
+        if PlayerChestplateBlock > NewChestplateBlock:
+            print("You find a new chestplate, but your current chestplate is already better!")
+        else:
+            print(f"You acquire a new *{NewChestplateTrait['Title']} {NewChestplate['Name']}*!")
+            PlayerChestplate = NewChestplate
+            PlayerChestplateTrait = NewChestplateTrait
+            PlayerChestplateBlock = NewChestplateBlock
+            print(f"You can now block {PlayerChestplateBlock} damage!") 
     else:
-        print("Player got Helmet or Coat, not Weapon so it is not implemented yet, sorry!")
+        print("Every item type should be available, so if you do get this, this is an error!")
+
 MonsterFromList = randint(0,4) #FOR FUTURE - CALL THIS IN LOOP TOO!
 FloorFromList = randint(0,6)
 
@@ -167,8 +269,11 @@ playerMana = 10
 
 playerHealth = 20
 
+
+
 PlayerWeapon = None
 PlayerWeaponTrait = None
+PlayerBookMagic = 0
 PlayerWeaponDamage = 0
 PlayerBaseMinDamage = 1
 PlayerBaseMaxDamage = 4
@@ -177,6 +282,16 @@ MaxDamage = 4
 
 MinHeal = 2
 MaxHeal = 4
+PlayerBook = None
+PlayerBookTrait = None
+PlayerBookMagic = 0
+PlayerBaseMinHeal = 2
+PlayerBaseMaxHeal = 4
+
+PlayerChestplate = None
+PlayerChestplateTrait = None
+PlayerChestplateBlock = 0
+PlayerBaseBlock = 0
 
 InputValid = 1
 difference = 0
@@ -224,13 +339,16 @@ while playerHealth > 0:
             print("Invalid input!")
             InputValid = 0    
     if InputValid == 1 and MonsterHealth > 0:
-            playerHealth = playerHealth - MonsterPossibleDamage
-            print(f"*{MonsterList[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}*!")
-            if FloorTypes[FloorFromList]['Poison'] >0:
-                    playerHealth = playerHealth - FloorTypes[FloorFromList]['Poison']
-                    print(f"The poison on the floor damages you for *{FloorTypes[FloorFromList]['Poison']}* HP!")
-            else:
-                    pass
+        if PlayerChestplateBlock - MonsterPossibleDamage >= 0:
+            print(f"You block all damage you take from the monster!")
+        else: 
+            playerHealth = playerHealth - MonsterPossibleDamage + PlayerChestplateBlock
+            print(f"*{MonsterList[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}* but you block for *{PlayerChestplateBlock}* DMG!")
+        if FloorTypes[FloorFromList]['Poison'] >0:
+            playerHealth = playerHealth - FloorTypes[FloorFromList]['Poison']
+            print(f"The poison on the floor damages you for *{FloorTypes[FloorFromList]['Poison']}* HP!")
+        else:
+            pass
             print(f"You now have *{playerHealth}* HP left!")
     elif InputValid == 1 and MonsterHealth <= 0:
             DefeatedMonsters += 1
@@ -244,7 +362,7 @@ while playerHealth > 0:
                     if playerMana + 5 > MaxMana:
                             difference = MaxMana - playerMana
                             playerMana += difference
-                            print(f"You regain *{difference}* Mana for clearing the floor! You now have *{playerMana}*!")
+                            print(f"You regain *{difference}* Mana for clearing the floor! You now have *{playerMana}* Mana!")
                     else: 
                         playerMana += 5
                         print(f"You regain *5* Mana for clearing the floor! You now have *{playerMana}* Mana!")
