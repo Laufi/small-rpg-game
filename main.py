@@ -29,7 +29,46 @@ Bosses = [{
          'MonsterMaxDamage': 6
         }
 ]
-
+MonsterTraits = [{'Title': 'Regular',
+                  'DamageModifier': 1,
+                  'HealthModifier': 1
+                 },
+                 {
+                  'Title': 'Weak',
+                  'DamageModifier': 0.5,
+                  'HealthModifier': 1       
+                 },
+                 {
+                  'Title': 'Strong',
+                  'DamageModifier': 1.5,
+                  'HealthModifier': 1       
+                 },
+                 {
+                  'Title': 'Wounded',
+                  'DamageModifier': 1,
+                  'HealthModifier': 0.5       
+                 },
+                 {
+                  'Title': 'Sturdy',
+                  'DamageModifier': 1,
+                  'HealthModifier': 1.5       
+                 },
+                 {
+                  'Title': 'Elite',
+                  'DamageModifier': 1.5,
+                  'HealthModifier': 2       
+                 },
+                 {
+                  'Title': 'Ultra',
+                  'DamageModifier': 2,
+                  'HealthModifier': 3       
+                 },
+                 {
+                  'Title': 'Boss',
+                  'DamageModifier': 1,
+                  'HealthModifier': 1       
+                 }
+]
 FloorTypes = [{'FloorType': 'Regular',
                'HealModifier': 1,
                'Poison': 0,
@@ -106,6 +145,10 @@ ItemTraits = [{
         {
          'Title': 'Titanium',
          'Modifier': 2
+        },
+        {
+         'Title': 'Ultra',
+         'Modifier': 4       
         }
         ]       
 BookTypes = [{
@@ -152,6 +195,10 @@ BookTraits = [{
         {
          'Title': 'Enchanted',
          'Modifier': 2
+        },
+        {
+         'Title': 'Ultra',
+         'Modifier': 4       
         }
 ]
 ChestplateTypes = [{
@@ -194,9 +241,9 @@ def PrintFinalResults():
 def PrintIntroduction():
     global DefeatedMonsters
     if DefeatedMonsters < 9:
-        print(f"You are fighting against a *{MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
-              f"The *{MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
-              f"It can deal *{MonsterList[MonsterFromList]['MonsterMinDamage']}-{MonsterList[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
+        print(f"You are fighting against a *{MonsterTraits[MonsterTrait]['Title']} {MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
+              f"The *{MonsterTraits[MonsterTrait]['Title']} {MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
+              f"It can deal *{math.ceil(MonsterTraits[MonsterTrait]['DamageModifier']*MonsterList[MonsterFromList]['MonsterMinDamage'])}-{math.ceil(MonsterTraits[MonsterTrait]['DamageModifier']*MonsterList[MonsterFromList]['MonsterMaxDamage'])}* damage! \n"
               f"You can deal *{ShownPossibleDamage}* damage! \n"
               f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
               f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
@@ -204,14 +251,14 @@ def PrintIntroduction():
               f"You can FIGHT, HEAL, RUN or check INVENTORY! \n"
             )
     elif DefeatedMonsters == 9:
-        print(f"You are fighting against a *{Bosses[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
-              f"The *{Bosses[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
-              f"It can deal *{Bosses[MonsterFromList]['MonsterMinDamage']}-{Bosses[MonsterFromList]['MonsterMaxDamage']}* damage! \n"
+        print(f"You are fighting against a *{MonsterTraits[MonsterTrait]['Title']} {Bosses[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
+              f"The *{MonsterTraits[MonsterTrait]['Title']} {Bosses[MonsterFromList]['MonsterType']}* has *{MonsterHealth*MonsterTraits[MonsterTrait]['HealthModifier']}* HP! \n" 
+              f"It can deal *{math.ceil(MonsterTraits[MonsterTrait]['DamageModifier']*Bosses[MonsterFromList]['MonsterMinDamage'])}-{math.ceil(MonsterTraits[MonsterTrait]['DamageModifier']*Bosses[MonsterFromList]['MonsterMaxDamage'])}* damage! \n"
               f"You can deal *{ShownPossibleDamage}* damage! \n"
               f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
               f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
               f"You have *{playerHealth}* health and you can block *{PlayerChestplateBlock}* damage!\n"
-              f"You can FIGHT, HEAL or RUN! \n"
+              f"You can FIGHT, HEAL, RUN or check INVENTORY! \n"
             )
 def GetNewItem():
     global PlayerWeapon
@@ -233,15 +280,19 @@ def GetNewItem():
     WhatTypeItem = random.choice(ItemTypes)
     MinDamage = PlayerBaseMinDamage + PlayerWeaponDamage
     MaxDamage = PlayerBaseMaxDamage + PlayerWeaponDamage
+    EquipmentUltraCheck = randint(1, 100)
     if WhatTypeItem == 'Weapon':
         NewWeapon = random.choice(Weapons)
-        NewWeaponTrait = random.choice(ItemTraits)
-        NewWeaponDamage = NewWeapon['BaseDamageBoost']*NewWeaponTrait['Modifier']
+        if EquipmentUltraCheck > 8:
+                NewWeaponTrait = randint(0, 3)
+        else:
+                NewWeaponTrait = 4
+        NewWeaponDamage = NewWeapon['BaseDamageBoost']*ItemTraits[NewWeaponTrait]['Modifier']
         NewWeaponDamage = math.ceil(NewWeaponDamage)
         if PlayerWeaponDamage > NewWeaponDamage:
             print("You find a new weapon, but your current weapon is already better!")
         else:
-            print(f"You acquire a new *{NewWeaponTrait['Title']} {NewWeapon['Name']}*! \n"
+            print(f"You acquire a new *{ItemTraits[NewWeaponTrait]['Title']} {NewWeapon['Name']}*! \n"
             f"It deals an additional *{NewWeaponDamage}* damage!")
             PlayerWeapon = NewWeapon
             PlayerWeaponTrait = NewWeaponTrait
@@ -252,13 +303,16 @@ def GetNewItem():
             print(f"You now deal *{MinDamage}* to *{MaxDamage}* Damage!")
     elif WhatTypeItem == 'Book':
         NewBook = random.choice(BookTypes)
-        NewBookTrait = random.choice(BookTraits)
-        NewBookMagic = NewBook['BaseHealBoost']*NewBookTrait['Modifier']
+        if EquipmentUltraCheck > 8:
+                NewBookTrait = randint(0,3)
+        else:
+                NewBookTrait = 4
+        NewBookMagic = NewBook['BaseHealBoost']*BookTraits[NewBookTrait]['Modifier']
         NewBookMagic = math.ceil(NewBookMagic)
         if PlayerBookMagic > NewBookMagic:
             print("You find a new book, but your current book is already better!")
         else:
-            print(f"You acquire a new *{NewBookTrait['Title']} {NewBook['Name']}*")
+            print(f"You acquire a new *{BookTraits[NewBookTrait]['Title']} {NewBook['Name']}*")
             PlayerBook = NewBook
             PlayerBookTrait = NewBookTrait
             PlayerBookMagic = NewBookMagic
@@ -268,12 +322,15 @@ def GetNewItem():
             print(f"You now heal *{MinHeal}* to *{MaxHeal}* HP!")
     elif WhatTypeItem == 'Chestplate':
         NewChestplate = random.choice(ChestplateTypes)
-        NewChestplateTrait = random.choice(ItemTraits)
-        NewChestplateBlock = NewChestplate['BaseBlock']*NewChestplateTrait['Modifier']
+        if EquipmentUltraCheck > 8:
+                NewChestplateTrait = randint(0,3)
+        else:
+                NewChestplateTrait = 4
+        NewChestplateBlock = NewChestplate['BaseBlock']*ItemTraits[NewChestplateTrait]['Modifier']
         if PlayerChestplateBlock > NewChestplateBlock:
             print("You find a new chestplate, but your current chestplate is already better!")
         else:
-            print(f"You acquire a new *{NewChestplateTrait['Title']} {NewChestplate['Name']}*!")
+            print(f"You acquire a new *{ItemTraits[NewChestplateTrait]['Title']} {NewChestplate['Name']}*!")
             PlayerChestplate = NewChestplate
             PlayerChestplateTrait = NewChestplateTrait
             PlayerChestplateBlock = NewChestplateBlock
@@ -321,19 +378,20 @@ TotalDamageDealt = 0
 DefeatedMonsters = 0
 FinalScore = 0
 
+MonsterTrait = randint(0,5)
 ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
 ShownPossibleHeal = f"{MinHeal}-{MaxHeal}"
-MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth'] #FOR FUTURE - CALL THIS IN LOOP TOO!
-MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
+MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier']
+MonsterPossibleDamage = randint(math.ceil(MonsterList[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(MonsterList[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
 PrintIntroduction()
 while playerHealth > 0:
     playerAction = input("Enter your action: ")
     PossibleDamage = randint(MinDamage, MaxDamage)
     PossibleHeal = randint(MinHeal, MaxHeal)
     if DefeatedMonsters < 9:
-        MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
+        MonsterPossibleDamage = randint(math.ceil(MonsterList[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(MonsterList[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
     elif DefeatedMonsters == 9:
-        MonsterPossibleDamage = randint(Bosses[MonsterFromList]['MonsterMinDamage'], Bosses[MonsterFromList]['MonsterMaxDamage'])
+        MonsterPossibleDamage = randint(math.ceil(Bosses[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(Bosses[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
     if playerAction == "FIGHT" or playerAction == "fight" or playerAction == "f" or playerAction == "F":
             MissChance = randint(1, 100)
             if MissChance > 20:
@@ -369,15 +427,15 @@ while playerHealth > 0:
             break
     elif playerAction == "INVENTORY" or playerAction == "I" or playerAction == "i" or playerAction == "inventory" or playerAction == "INV" or playerAction == "inv":
             if PlayerWeaponTrait != None:
-                print(f"Weapon: *{PlayerWeaponTrait['Title']} {PlayerWeapon['Name']}*: *{PlayerWeaponDamage}* damage")
+                print(f"Weapon: *{ItemTraits[PlayerWeaponTrait]['Title']} {PlayerWeapon['Name']}*: *{PlayerWeaponDamage}* damage")
             else:
                 print("You do not have a *Weapon*!")
             if PlayerChestplateTrait != None:
-                print(f"Chestplate: *{PlayerChestplateTrait['Title']} {PlayerChestplate['Name']}*: *{PlayerChestplateBlock}* block")
+                print(f"Chestplate: *{ItemTraits[PlayerChestplateTrait]['Title']} {PlayerChestplate['Name']}*: *{PlayerChestplateBlock}* block")
             else:
                 print("You do not have a *Chestplate*!")
             if PlayerBookTrait != None:
-                print(f"Magic scroll: *{PlayerBookTrait['Title']} {PlayerBook['Name']}*: *{PlayerBookMagic}* magic")
+                print(f"Magic scroll: *{BookTraits[PlayerBookTrait]['Title']} {PlayerBook['Name']}*: *{PlayerBookMagic}* magic")
             else:
                 print("You do not have a *Magic Book*!")
             InputValid = 0
@@ -436,16 +494,26 @@ while playerHealth > 0:
             elif DefeatedMonsters < 9:
                 MonsterFromList = randint(0,4)
                 FloorFromList = randint(0,6)
-                MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']
-                MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
+                UltraCheck = randint(1,100)
+                if UltraCheck > 8:
+                        MonsterTrait = randint(0,5)
+                        print("New monster should be a normal one")
+                        print(MonsterTraits[MonsterTrait]['Title'])
+                else:
+                        MonsterTrait = 6
+                        print("New monster should be an ultra one")
+                        print(MonsterTraits[MonsterTrait]['Title'])
+                MonsterPossibleDamage = randint(math.ceil(MonsterList[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(MonsterList[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
+                MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier']
                 PrintIntroduction()
             elif DefeatedMonsters == 9:
                 #print("Boss battle coming up here!")
                 #print(f"CHECK: defeated {DefeatedMonsters} monsters ")
                 MonsterFromList = randint(0,0)
                 FloorFromList = randint(0,6)
-                MonsterHealth = Bosses[MonsterFromList]['MonsterHealth']
-                MonsterPossibleDamage = randint(Bosses[MonsterFromList]['MonsterMinDamage'], Bosses[MonsterFromList]['MonsterMaxDamage'])
+                MonsterTrait = 7
+                MonsterHealth = Bosses[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier']
+                MonsterPossibleDamage = randint(math.ceil(Bosses[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(Bosses[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
                 print("================= B O S S F I G H T ===========")
                 PrintIntroduction()
     elif InputValid == 0:
