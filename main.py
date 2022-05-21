@@ -381,6 +381,7 @@ while playerHealth > 0:
             else:
                 print("You do not have a *Magic Book*!")
             InputValid = 0
+            print("\n")
     else:
             print("Invalid input!")
             InputValid = 0    
@@ -396,7 +397,6 @@ while playerHealth > 0:
                   elif DefeatedMonsters == 9:
                         playerHealth = playerHealth - MonsterPossibleDamage + PlayerChestplateBlock
                         print(f"*{Bosses[MonsterFromList]['MonsterType']}* attacks you for *{MonsterPossibleDamage}* but you block for *{PlayerChestplateBlock}* DMG!")
-                print(f"You now have *{playerHealth}* HP left!")
         else:
             print("You dodge the monster's attack!")
         if FloorTypes[FloorFromList]['Poison'] >0:
@@ -404,6 +404,8 @@ while playerHealth > 0:
             print(f"The poison on the floor damages you for *{FloorTypes[FloorFromList]['Poison']}* HP!")
         else:
             pass
+        print(f"You now have *{playerHealth}* HP left!")
+        print("\n")
     elif InputValid == 1 and MonsterHealth <= 0:
             DefeatedMonsters += 1
             if DefeatedMonsters < 10:
@@ -419,11 +421,12 @@ while playerHealth > 0:
                     if playerMana + 5 > MaxMana:
                             difference = MaxMana - playerMana
                             playerMana += difference
-                            print(f"You regain *{difference}* Mana for clearing the floor! You now have *{playerMana}* Mana!")
+                            print(f"You regain *{difference}* Mana for clearing the floor! You now have *{playerMana}* Mana! \n")
                     else: 
                         playerMana += 5
-                        print(f"You regain *5* Mana for clearing the floor! You now have *{playerMana}* Mana!")
+                        print(f"You regain *5* Mana for clearing the floor! You now have *{playerMana}* Mana! \n")
             else:
+                    print("\n")
                     pass
             if DefeatedMonsters == 10:
                 print("THE PLAYER HAS DEFEATED THE FINAL ENEMY! THE TOWER IS NOW FREE! \n"
@@ -437,8 +440,8 @@ while playerHealth > 0:
                 MonsterPossibleDamage = randint(MonsterList[MonsterFromList]['MonsterMinDamage'], MonsterList[MonsterFromList]['MonsterMaxDamage'])
                 PrintIntroduction()
             elif DefeatedMonsters == 9:
-                print("Boss battle coming up here!")
-                print(f"CHECK: defeated {DefeatedMonsters} monsters ")
+                #print("Boss battle coming up here!")
+                #print(f"CHECK: defeated {DefeatedMonsters} monsters ")
                 MonsterFromList = randint(0,0)
                 FloorFromList = randint(0,6)
                 MonsterHealth = Bosses[MonsterFromList]['MonsterHealth']
@@ -447,7 +450,6 @@ while playerHealth > 0:
                 PrintIntroduction()
     elif InputValid == 0:
             InputValid = 1
-
     if playerHealth <= 0:
             print("The player has run out of health! \n"
             "\n"
