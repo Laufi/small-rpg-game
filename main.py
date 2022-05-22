@@ -4,29 +4,40 @@ import math
 MonsterList = [{'MonsterType': 'Skeleton',
                'MonsterHealth': 8,
                'MonsterMinDamage': 1,
-               'MonsterMaxDamage': 3}, 
+               'MonsterMaxDamage': 3,
+               'Phases' : 0}, 
                {'MonsterType': 'Bat',
                'MonsterHealth': 3,
                'MonsterMinDamage': 3,
-               'MonsterMaxDamage': 5},
+               'MonsterMaxDamage': 5,
+               'Phases': 0},
                {'MonsterType' : 'Alligator',
                'MonsterHealth': 4,
                'MonsterMinDamage': 2,
-               'MonsterMaxDamage': 7},
+               'MonsterMaxDamage': 7,
+               'Phases': 0},
                {'MonsterType' : 'Ninja',
                'MonsterHealth': 3,
                'MonsterMinDamage': 8,
-               'MonsterMaxDamage': 10},
+               'MonsterMaxDamage': 10,
+               'Phases': 0},
                {'MonsterType' : 'Muddy Crab',
                'MonsterHealth': 3,
                'MonsterMinDamage': 100,
-               'MonsterMaxDamage': 100} 
+               'MonsterMaxDamage': 100,
+               'Phases': 0},
+               {'MonsterType' : 'Zombie',
+               'MonsterHealth': 6,
+               'MonsterMinDamage': 2,
+               'MonsterMaxDamage': 4,
+               'Phases': 1} 
                ]
 Bosses = [{
          'MonsterType': 'Massive Mosquitoe',
          'MonsterHealth': 30,
          'MonsterMinDamage': 2,
-         'MonsterMaxDamage': 6
+         'MonsterMaxDamage': 6,
+         'Phases': 0
         }
 ]
 MonsterTraits = [{'Title': 'Regular',
@@ -243,7 +254,7 @@ def PrintIntroduction():
     if DefeatedMonsters < 9:
         print(f"You are fighting against a *{MonsterTraits[MonsterTrait]['Title']} {MonsterList[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
               f"The *{MonsterTraits[MonsterTrait]['Title']} {MonsterList[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
-              f"It can deal *{math.ceil(MonsterTraits[MonsterTrait]['DamageModifier']*MonsterList[MonsterFromList]['MonsterMinDamage'])}-{math.ceil(MonsterTraits[MonsterTrait]['DamageModifier']*MonsterList[MonsterFromList]['MonsterMaxDamage'])}* damage! \n"
+              f"It can deal *{MonsterMinDamage}-{MonsterMaxDamage}* damage! \n"
               f"You can deal *{ShownPossibleDamage}* damage! \n"
               f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
               f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
@@ -252,8 +263,8 @@ def PrintIntroduction():
             )
     elif DefeatedMonsters == 9:
         print(f"You are fighting against a *{MonsterTraits[MonsterTrait]['Title']} {Bosses[MonsterFromList]['MonsterType']}* on a *{FloorTypes[FloorFromList]['FloorType']}* floor! \n"
-              f"The *{MonsterTraits[MonsterTrait]['Title']} {Bosses[MonsterFromList]['MonsterType']}* has *{MonsterHealth*MonsterTraits[MonsterTrait]['HealthModifier']}* HP! \n" 
-              f"It can deal *{math.ceil(MonsterTraits[MonsterTrait]['DamageModifier']*Bosses[MonsterFromList]['MonsterMinDamage'])}-{math.ceil(MonsterTraits[MonsterTrait]['DamageModifier']*Bosses[MonsterFromList]['MonsterMaxDamage'])}* damage! \n"
+              f"The *{MonsterTraits[MonsterTrait]['Title']} {Bosses[MonsterFromList]['MonsterType']}* has *{MonsterHealth}* HP! \n" 
+              f"It can deal *{MonsterMinDamage}-{MonsterMaxDamage}* damage! \n"
               f"You can deal *{ShownPossibleDamage}* damage! \n"
               f"You can heal for *{ShownPossibleHeal}* HP by using *3* Mana! \n"
               f"You have *{playerMana}* Mana out of a maximum of *{MaxMana}*! \n"
@@ -338,15 +349,15 @@ def GetNewItem():
     else:
         print("Every item type should be available, so if you do get this, this is an error!")
 
-MonsterFromList = randint(0,4) #FOR FUTURE - CALL THIS IN LOOP TOO!
+MonsterFromList = randint(0,5) #FOR FUTURE - CALL THIS IN LOOP TOO!
 FloorFromList = randint(0,6)
+PhasesLeft = MonsterList[MonsterFromList]['Phases']
+PhasesDefeated = 0
 
 MaxMana = 10
 playerMana = 10 
 
 playerHealth = 20
-
-
 
 PlayerWeapon = None
 PlayerWeaponTrait = None
@@ -378,20 +389,59 @@ TotalDamageDealt = 0
 DefeatedMonsters = 0
 FinalScore = 0
 
+while True:
+        ClassChoice = input("You can be a WARRIOR, MAGE, TANK, KNIGHT! \n What do you want to be?: ")
+        if ClassChoice == "WARRIOR" or ClassChoice == "warrior" or ClassChoice == "W" or ClassChoice == "w":
+                PlayerBaseMinHeal = 1
+                PlayerBaseMaxHeal = 3
+                PlayerBaseMinDamage = 2
+                PlayerBaseMaxDamage = 5
+                playerHealth = 25
+                MaxMana = 8
+                PlayerMana = 8
+                break
+        elif ClassChoice == "MAGE" or ClassChoice == "mage" or ClassChoice == "m" or ClassChoice == "M":
+                PlayerBaseMinHeal = 3
+                PlayerBaseMaxHeal = 5
+                PlayerBaseMinDamage = 1
+                PlayerBaseMaxDamage = 4
+                PlayerHealth = 15
+                MaxMana = 12
+                PlayerMana = 12
+                break
+        elif ClassChoice == "TANK" or ClassChoice == "tank" or ClassChoice == "T" or ClassChoice == "t":
+                PlayerBaseMinHeal = 2
+                PlayerBaseMaxHeal = 4
+                PlayerBaseMinDamage = 1
+                PlayerBaseMaxDamage = 4
+                PlayerHealth = 30
+                MaxMana = 8
+                PlayerMana = 8
+                break
+        elif ClassChoice == "KNIGHT" or ClassChoice == "knight" or ClassChoice == "K" or ClassChoice == "k":
+                MaxMana = 10
+                playerMana = 10 
+                playerHealth = 20
+                PlayerBaseMinHeal = 2
+                PlayerBaseMaxHeal = 4
+                PlayerBaseMinDamage = 1
+                PlayerBaseMaxDamage = 4
+                break
+        else:
+                print("Invalid input!")
 MonsterTrait = randint(0,5)
 ShownPossibleDamage = f"{MinDamage}-{MaxDamage}"
 ShownPossibleHeal = f"{MinHeal}-{MaxHeal}"
-MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier']
-MonsterPossibleDamage = randint(math.ceil(MonsterList[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(MonsterList[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
+MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier']*(0.5**PhasesDefeated)
+MonsterMinDamage = math.ceil(MonsterList[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']*(0.5**PhasesDefeated))
+MonsterMaxDamage = math.ceil(MonsterList[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']*(0.5**PhasesDefeated))
+MonsterPossibleDamage = randint(MonsterMinDamage, MonsterMaxDamage)
 PrintIntroduction()
 while playerHealth > 0:
     playerAction = input("Enter your action: ")
     PossibleDamage = randint(MinDamage, MaxDamage)
     PossibleHeal = randint(MinHeal, MaxHeal)
-    if DefeatedMonsters < 9:
-        MonsterPossibleDamage = randint(math.ceil(MonsterList[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(MonsterList[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
-    elif DefeatedMonsters == 9:
-        MonsterPossibleDamage = randint(math.ceil(Bosses[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(Bosses[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
+    MonsterPossibleDamage = randint(MonsterMinDamage, MonsterMaxDamage)
     if playerAction == "FIGHT" or playerAction == "fight" or playerAction == "f" or playerAction == "F":
             MissChance = randint(1, 100)
             if MissChance > 20:
@@ -465,7 +515,9 @@ while playerHealth > 0:
         print(f"You now have *{playerHealth}* HP left!")
         print("\n")
     elif InputValid == 1 and MonsterHealth <= 0:
+        if PhasesLeft == 0:
             DefeatedMonsters += 1
+            PhasesDefeated = 0
             if DefeatedMonsters < 10:
                 print(f"The *{MonsterList[MonsterFromList]['MonsterType']}* has been defeated! You have defeated *{DefeatedMonsters}* monsters so far!\n"
                 "\n"
@@ -492,20 +544,22 @@ while playerHealth > 0:
                 PrintFinalResults()
                 break
             elif DefeatedMonsters < 9:
-                MonsterFromList = randint(0,4)
+                MonsterFromList = randint(0,5)
                 FloorFromList = randint(0,6)
                 UltraCheck = randint(1,100)
                 if UltraCheck > 8:
                         MonsterTrait = randint(0,5)
-                        print("New monster should be a normal one")
-                        print(MonsterTraits[MonsterTrait]['Title'])
+                        #print("New monster should be a normal one")
+                        #print(MonsterTraits[MonsterTrait]['Title'])
                 else:
                         MonsterTrait = 6
-                        print("New monster should be an ultra one")
-                        print(MonsterTraits[MonsterTrait]['Title'])
-                MonsterPossibleDamage = randint(math.ceil(MonsterList[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(MonsterList[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
-                MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier']
+                        #print("New monster should be an ultra one")
+                        #print(MonsterTraits[MonsterTrait]['Title'])
+                MonsterHealth = MonsterList[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier']*(0.5**PhasesDefeated)
+                MonsterMinDamage = math.ceil(MonsterList[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']*(0.5**PhasesDefeated))
+                MonsterMaxDamage = math.ceil(MonsterList[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']*(0.5**PhasesDefeated))
                 PrintIntroduction()
+                PhasesLeft = MonsterList[MonsterFromList]['Phases']
             elif DefeatedMonsters == 9:
                 #print("Boss battle coming up here!")
                 #print(f"CHECK: defeated {DefeatedMonsters} monsters ")
@@ -513,9 +567,26 @@ while playerHealth > 0:
                 FloorFromList = randint(0,6)
                 MonsterTrait = 7
                 MonsterHealth = Bosses[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier']
-                MonsterPossibleDamage = randint(math.ceil(Bosses[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier']), math.ceil(Bosses[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier']))
+                MonsterMinDamage = math.ceil(Bosses[MonsterFromList]['MonsterMinDamage']*MonsterTraits[MonsterTrait]['DamageModifier'])
+                MonsterMaxDamage = math.ceil(Bosses[MonsterFromList]['MonsterMaxDamage']*MonsterTraits[MonsterTrait]['DamageModifier'])
+                MonsterPossibleDamage = randint(MonsterMinDamage, MonsterMaxDamage)
+                PhasesLeft = MonsterList[MonsterFromList]['Phases']
                 print("================= B O S S F I G H T ===========")
                 PrintIntroduction()
+        elif PhasesLeft != 0:
+                PhasesDefeated += 1
+                PhasesLeft -= 1
+                print("You thought you defeated the monster, but it rises up once more! \n")
+                if DefeatedMonsters < 9:
+                        MonsterHealth = (MonsterList[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier'])*(0.5**PhasesDefeated)
+                elif DefeatedMonsters == 9:
+                        MonsterHealth = (Bosses[MonsterFromList]['MonsterHealth']*MonsterTraits[MonsterTrait]['HealthModifier'])*(0.5**PhasesDefeated)
+                MonsterMinDamage = math.ceil(MonsterMinDamage*(0.5**PhasesDefeated))
+                MonsterMaxDamage = math.ceil(MonsterMaxDamage*(0.5**PhasesDefeated))
+                MonsterPossibleDamage = randint(MonsterMinDamage, MonsterMaxDamage)
+                #print(PhasesLeft)
+                PrintIntroduction()
+        #print("Phase should be defeated here")
     elif InputValid == 0:
             InputValid = 1
     if playerHealth <= 0:
